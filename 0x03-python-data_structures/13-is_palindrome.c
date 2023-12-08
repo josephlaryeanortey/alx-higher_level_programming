@@ -1,23 +1,23 @@
 #include "lists.h"
 #include <stdlib.h>
-#include <stdio.h>
 
 /**
- * add_nodeint - adds a new node at the beginning of a listint_t list
+ * reverse_list - reverses a listint_t list
  * @head: pointer to pointer of the head of the list
- * @n: integer to add in listint_t list
- * Return: address of the new element, or NULL if it failed
  */
-listint_t *add_nodeint(listint_t **head, const int n)
+void reverse_list(listint_t **head)
 {
-    listint_t *new_node = malloc(sizeof(listint_t));
-    if (new_node == NULL)
-        return NULL;
+    listint_t *prev = NULL, *current = *head, *next;
 
-    new_node->n = n;
-    new_node->next = *head;
-    *head = new_node;
-    return new_node;
+    while (current != NULL)
+    {
+        next = current->next;
+        current->next = prev;
+        prev = current;
+        current = next;
+    }
+
+    *head = prev;
 }
 
 /**
@@ -27,30 +27,49 @@ listint_t *add_nodeint(listint_t **head, const int n)
  */
 int is_palindrome(listint_t **head)
 {
-    listint_t *reversed = NULL;
-    listint_t *current = *head;
+    listint_t *slow = *head, *fast = *head;
+    listint_t *prev_slow = NULL, *second_half = NULL;
+    int is_palindrome = 1;
 
-    // Create a reversed copy of the list
-    while (current != NULL)
+    if (*head == NULL || (*head)->next == NULL)
+        return 1;
+
+    // Find the middle of the list
+    while (fast != NULL && fast->next != NULL)
     {
-        add_nodeint(&reversed, current->n);
-        current = current->next;
+        fast = fast->next->next;
+
+        // Reverse the first half of the list
+        listint_t *temp = slow;
+        slow = slow->next;
+        temp->next = prev_slow;
+        prev_slow = temp;
     }
 
-    // Compare the original list with the reversed list
-    current = *head;
-    while (current != NULL && reversed != NULL)
+    // Adjust pointers for odd length of the list
+    if (fast != NULL)
+        slow = slow->next;
+
+    second_half = slow;
+
+    // Reverse the first half back to its original order
+    reverse_list(&prev_slow);
+
+    // Compare the original first half with the second half
+    while (prev_slow != NULL && second_half != NULL)
     {
-        if (current->n != reversed->n)
+        if (prev_slow->n != second_half->n)
         {
-            free_listint(&reversed);  // Free the reversed list
-            return 0;  // Not a palindrome
+            is_palindrome = 0;
+            break;
         }
 
-        current = current->next;
-        reversed = reversed->next;
+        prev_slow = prev_slow->next;
+        second_half = second_half->next;
     }
 
-    free_listint(&reversed);  // Free the reversed list
-    return 1;  // Palindrome
+    // Reverse the first half back to its original order
+    reverse_list(&prev_slow);
+
+    return is_palindrome;
 }
