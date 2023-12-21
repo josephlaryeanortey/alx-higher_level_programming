@@ -45,7 +45,7 @@ class Square:
     def position(self, value):
         """
         Function that sets position of the square
-        Raise TypeError if value is not tuple or value !=2 or <0
+        Raise TypeError if value is not tuple or value != 2 or < 0
         """
         if not isinstance(value, tuple):
             raise TypeError('position must be a tuple of 2 positive integers')
@@ -66,7 +66,7 @@ class Square:
         """Function that returns position in space"""
         s_position = ""
         if not self.size:
-            return "\n"
+            return s_position
 
         for n in range(self.position[1]):
             s_position += "\n"
@@ -74,13 +74,11 @@ class Square:
         for n in range(self.size):
             for x in range(self.position[0]):
                 s_position += " "
-
             for y in range(self.size):
                 s_position += "#"
-
             s_position += "\n"
 
-        return s_position
+        return s_position[:-1]
 
     def my_print(self):
         """Function that prints square with the '#' character"""
