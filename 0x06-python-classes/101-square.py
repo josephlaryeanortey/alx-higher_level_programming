@@ -1,22 +1,25 @@
 #!/usr/bin/python3
 """
-9. Compare 2 squares
+8. Print Square instance
 A class Square that defines a square
 """
 
 
 class Square:
-    """Class that defines a square"""
+    """A class that defines a square"""
 
-    def __init__(self, size=0):
-        """Define private instance attribute: size"""
+    def __str__(self):
+        """Define string representation of the Square instance"""
+        return self.pos_print()
 
-        self.__size = size
+    def __init__(self, size=0, position=(0, 0)):
+        """Define private instance attributes: size & position"""
+        self.size = size
+        self.position = position
 
     @property
     def size(self):
-        """"Function that returns private instance attribute: size"""
-
+        """Function that returns size"""
         return self.__size
 
     @size.setter
@@ -25,7 +28,6 @@ class Square:
         Define private instance attribute: value
         Raise TypeError & ValueError if not int or <0 resp.
         """
-
         if not isinstance(value, int):
             raise TypeError('size must be an integer')
 
@@ -34,36 +36,63 @@ class Square:
 
         self.__size = value
 
+    @property
+    def position(self):
+        """Define private instance attribute: position"""
+        return self.__position
+
+    @position.setter
+    def position(self, value):
+        """
+        Function that sets position of the square
+        Raise TypeError if value is not tuple or value !=2 or <0
+        """
+        if not isinstance(value, tuple):
+            raise TypeError('position must be a tuple of 2 positive integers')
+
+        if len(value) != 2:
+            raise TypeError('position must be a tuple of 2 positive integers')
+
+        if len([i for i in value if isinstance(i, int) and i >= 0]) != 2:
+            raise TypeError('position must be a tuple of 2 positive integers')
+
+        self.__position = value
+
     def area(self):
         """Function that calculates area"""
-
         return self.__size ** 2
 
-    def __le__(self, other):
-        """Function that compares if a sqare is <= another"""
+    def pos_print(self):
+        """Function that returns position in space"""
+        s_position = ""
+        if not self.size:
+            return "\n"
 
-        return self.area() <= other.area()
+        for n in range(self.position[1]):
+            s_position += "\n"
 
-    def __lt__(self, other):
-        """Function that compares if a square is < another"""
+        for n in range(self.size):
+            for x in range(self.position[0]):
+                s_position += " "
 
-        return self.area() < other.area()
+            for y in range(self.size):
+                s_position += "#"
 
-    def __ge__(self, other):
-        """Function that compares if a square is >= another"""
+            s_position += "\n"
 
-        return self.area() >= other.area()
+        return s_position
 
-    def __ne__(self, other):
-        """Function that compares if a square is != another"""
-        return self.area() != other.area()
+    def my_print(self):
+        """Function that prints square with the '#' character"""
+        print(self.pos_print(), end='')
 
-    def __gt__(self, other):
-        """Function that compares if a square is > another"""
 
-        return self.area() > other.area()
+if __name__ == "__main__":
+    # Example usage
+    my_square = Square(5, (0, 0))
+    print(my_square)
 
-    def __eq__(self, other):
-        """Function that compares f a square == another"""
+    print("--")
 
-        return self.area() == other.area()
+    my_square = Square(5, (4, 1))
+    print(my_square)
